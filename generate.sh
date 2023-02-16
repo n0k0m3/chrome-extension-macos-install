@@ -75,10 +75,13 @@ else
     print "Existing extension IDs from $1, copy to next prompt to preserve:\n"
     # Insane sed command to get the existing extension IDs from file
     cat $1 | sed -e ':a' -e 'N' -e '$!ba' -n -e "s#[[:space:][:graph:]]*<key>ExtensionInstallAllowlist</key>[[:space:]]*<array>\([[:space:][:graph:]]*\)\n                                    </array>[[:space:][:graph:]]*#\1#p" | sed "s#[[:space:]]*<string>\(.*\)</string>#\1#g" | sed "s#</string>#\n#g" | sed "s#<string>##g" | sed -e ':a' -e 'N' -e '$!ba' -e "s#\n# #g" | sed 's/^ *//g'
+    echo ""
 
     extension_id
 
+    cat $1
     # Replace existing extension IDs with new ones
-    cat $1 | sed -e ':a' -e 'N' -e '$!ba' -e "s#\(<key>ExtensionInstallAllowlist</key>[[:space:]]*<array>\n                                        \)\([[:space:][:graph:]]*\)\(\n                                    </array>\)#\1$EXTENSION_STRING\3#" >"$1"
+    cat $1 | sed -e ':a' -e 'N' -e '$!ba' -e "s#\(<key>ExtensionInstallAllowlist</key>[[:space:]]*<array>\n                                        \)\([[:space:][:graph:]]*\)\(\n                                    </array>\)#\1$EXTENSION_STRING\3#" >"new_$1"
+    mv "new_$1" $1
 
 fi
